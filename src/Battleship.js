@@ -45,7 +45,7 @@ const BoardContainer = () => {
           </button>
         </>
       )}
-      {hits === shipsCount && shots === minimumShots && (
+      {hits === shipsCount && (
         <>
           <div className="text-3xl">You win =)</div>
           <button className="m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>

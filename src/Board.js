@@ -24,7 +24,7 @@ const Board = ({ onClick, grid }) => {
 }
 
 Board.propTypes = {
-  onCLick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   grid: PropTypes.array.isRequired
 }
 
