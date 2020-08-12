@@ -29,19 +29,19 @@ const { grid, shots, hits } = game
 
 
     return (
-      <div className="game-container">
-        <h2>
+      <div className="flex flex-col justify-center items-center">
+        <div className="text-2xl">
            shots: <span data-testid="shots">{shots}</span> | hits: <span data-testid="hits">{hits}</span>
-        </h2>
+        </div>
         {hits < shipsCount && shots === 0 && (
           <>
-            <h3>You lose =(</h3>
+            <div className="text-3xl">You lose =(</div>
             <button onClick={restart}>restart</button>
           </>
         )}
         {hits === shipsCount && shots === 3 && (
           <>
-            <h3>You win =)</h3>
+            <div className="text-3xl">You win =)</div>
             <button onClick={restart}>restart</button>
           </>
         )}

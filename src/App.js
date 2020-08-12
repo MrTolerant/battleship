@@ -1,13 +1,14 @@
 import React from 'react'
-import './App.css'
 
 import Battleship from './Battleship'
 
 function App() {
   return (
-    <div className="App">
-      <h1>Battleship</h1>
+    <div className="relative h-screen flex flex-col bg-opacity-50 bg-black text-gray-100 justify-center items-center antialiased">
+      <div className="flex flex-row text-6xl">Battleship</div>
+    <div className="flex flex-row rounded shadow-lg m-auto p-6">
       <Battleship />
+    </div>
     </div>
   )
 }
