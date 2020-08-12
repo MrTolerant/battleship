@@ -1,4 +1,4 @@
- const initialGame = [
+ const initialGrid = [
     [
       { ship: false, hit: false },
       { ship: false, hit: false },
@@ -120,4 +120,4 @@
       { ship: false, hit: false }
     ]
   ]
-export default initialGame
+export default initialGrid
