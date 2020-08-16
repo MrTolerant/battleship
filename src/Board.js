@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Board = ({ onClick, grid }) => {
   const getColor = ({ hit, ship }) => {
-    // if (ship && !hit) return 'bg-blue-500' //remove
+    if (ship && !hit) return 'bg-blue-500' //remove
     if (!hit) return 'border-dashed border-2'
     if (!ship && hit) return 'bg-gray-700'
     if (ship && hit) return 'bg-red-500'

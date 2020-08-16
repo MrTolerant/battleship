@@ -74,10 +74,10 @@ const BoardContainer = () => {
       </div>
       {hits < shipsCount && shots > 0 && (
         <>
-          <button className="m-2 bg-yellow-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onClick={addShip}>
+          <button className="transition duration-500 ease-in-out m-2 bg-yellow-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onClick={addShip}>
             AddShip
           </button>
-          <button className="m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
+          <button className="transition duration-500 ease-in-out m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
             restart
           </button>
         </>
