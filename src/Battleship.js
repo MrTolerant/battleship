@@ -7,22 +7,24 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max))
 }
 
-const randomGrid = (gridSize) => {
-  let grid = []
-  for (let x = 0; x < gridSize; x += 1) {
-    grid = [...grid, []]
-    for (let y = 0; y < gridSize; y += 1) {
-      grid[x] = [...grid[x], { ship: getRandomInt(2), hit: 0 }]
-    }
-  }
-  return grid
-}
-
 const BoardContainer = () => {
-  const gridSize = 14
+  const randomGrid = (gridSize, shipsCount) => {
+    let grid = []
+    const ships = new Array(shipsCount).fill(null).map((ship) => `${getRandomInt(gridSize)}-${getRandomInt(gridSize)}`)
+    for (let x = 0; x < gridSize; x += 1) {
+      grid = [...grid, []]
+      for (let y = 0; y < gridSize; y += 1) {
+        grid[x] = [...grid[x], { ship: ships.includes(`${x}-${y}`) ? 1 : 0, hit: 0 }]
+      }
+    }
+    console.log('ships', ships)
+    console.log('grid', grid)
+    return grid
+  }
 
-  const [grid, setGrid] = useState(randomGrid(gridSize))
-  const shipsCount = grid.flat().reduce((acc, rec) => (rec.ship ? (acc += 1) : acc), 0)
+  const gridSize = 10
+  const shipsCount = 10 // grid.flat().reduce((acc, rec) => (rec.ship ? (acc += 1) : acc), 0)
+  const [grid, setGrid] = useState(randomGrid(gridSize, shipsCount))
   const maxMiss = 5
   const initialState = {
     shots: shipsCount + maxMiss,
@@ -31,9 +33,7 @@ const BoardContainer = () => {
   const [shots, setShots] = useState(initialState.shots)
   const [hits, setHits] = useState(initialState.hits)
 
-  useEffect(() => {
-    console.log('grid', grid)
-  }, [grid])
+  const addShip = () => {}
 
   const onClick = (x, y) => {
     if (!grid[x][y].hit) {
@@ -46,12 +46,12 @@ const BoardContainer = () => {
   const restart = () => {
     setShots(initialState.shots)
     setHits(initialState.hits)
-    setGrid(randomGrid(gridSize))
+    setGrid(randomGrid(gridSize, shipsCount))
   }
   return (
     <div className="flex flex-col">
-      <div className="text-2xl flex flex-row w-56">
-        <div className="p-2">shots: {shots}</div> <div className="ml-auto p-2">hits: {hits}</div>
+      <div className="text-2xl flex flex-row w-full">
+        <div className="p-2">shots: {shots}</div> <div className="ml-auto p-2">hits: {hits}</div> <div className="ml-auto p-2">ships: {shipsCount - hits}</div>
       </div>
       <div className="flex flex-col items-center p-2">
         {hits < shipsCount && shots === 0 && (
@@ -72,6 +72,16 @@ const BoardContainer = () => {
         )}
         {hits < shipsCount && shots > 0 && <Board onClick={onClick} grid={grid} />}
       </div>
+      {hits < shipsCount && shots > 0 && (
+        <>
+          <button className="m-2 bg-yellow-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onClick={addShip}>
+            AddShip
+          </button>
+          <button className="m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
+            restart
+          </button>
+        </>
+      )}
     </div>
   )
 }
