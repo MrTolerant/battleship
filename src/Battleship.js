@@ -8,7 +8,41 @@ function getRandomInt(max) {
 }
 
 const BoardContainer = () => {
+  const maxMiss = 5
   const [ships, setShips] = useState([])
+  const gridSize = 10
+  const shipsCount = 10
+  const [shots, setShots] = useState(0)
+  const [hits, setHits] = useState(0)
+
+  const restart = useCallback(() => {
+    // setShots(0)
+    setHits(0)
+    setGrid(emptyGrid(gridSize))
+    addShips(shipsCount)
+  }, [])
+
+  const emptyGrid = useCallback(
+    (gridSize) => {
+      let grid = []
+      for (let x = 0; x < gridSize; x += 1) {
+        grid = [...grid, []]
+        for (let y = 0; y < gridSize; y += 1) {
+          grid[x] = [...grid[x], { ship: 0, hit: 0, inactive: false }]
+        }
+      }
+      console.log('empty grid')
+
+      return grid
+    },
+    [restart]
+  )
+
+  // useEffect(() => {
+  //   set
+  // }, [grid])
+
+  const [grid, setGrid] = useState(emptyGrid(gridSize, shipsCount))
 
   const addShips = (count = 1) => {
     let newShips = []
@@ -16,43 +50,22 @@ const BoardContainer = () => {
       const startPos = { x: getRandomInt(gridSize), y: getRandomInt(gridSize) }
       const length = getRandomInt(3) + 2
       const direction = getRandomInt(20) ? 'vertical' : 'horizontal'
-      newShips = [...newShips, { startPos, length, direction }]
-      console.log('new ships', newShips)
+      newShips = [...newShips, { startPos, length, direction, lives: length }]
+      console.log('add ships func', newShips)
     }
     setShips([...newShips])
     console.log('add ship')
   }
 
-  const randomGrid = (gridSize, shipsCount) => {
-    let grid = []
-    for (let x = 0; x < gridSize; x += 1) {
-      grid = [...grid, []]
-      for (let y = 0; y < gridSize; y += 1) {
-        grid[x] = [...grid[x], { ship: 0, hit: 0, inactive: false }]
-      }
-    }
-
-    return grid
-  }
-
   useEffect(() => {
     addShips(shipsCount)
+    console.log('add ships useffect')
   }, [])
 
   useEffect(() => {
     putShips()
+    console.log('put ships useffect')
   }, [ships])
-
-  const gridSize = 10
-  const shipsCount = 10 // grid.flat().reduce((acc, rec) => (rec.ship ? (acc += 1) : acc), 0)
-  const [grid, setGrid] = useState(randomGrid(gridSize, shipsCount))
-  const maxMiss = 5
-  const initialState = {
-    shots: ships.length + maxMiss,
-    hits: 0
-  }
-  const [shots, setShots] = useState(initialState.shots)
-  const [hits, setHits] = useState(initialState.hits)
 
   const putShips = () => {
     let newGrid = grid
@@ -85,6 +98,7 @@ const BoardContainer = () => {
   }
 
   const onClick = (x, y) => {
+    console.log('click', x, y)
     if (!grid[x][y].hit) {
       grid[x][y].hit = true
       if (grid[x][y].ship) setHits(hits + 1)
@@ -92,12 +106,11 @@ const BoardContainer = () => {
     }
   }
 
-  const restart = () => {
-    setShots(initialState.shots)
-    setHits(initialState.hits)
-    setGrid(randomGrid(gridSize, shipsCount))
-    addShips(shipsCount)
-  }
+  useEffect(() => {
+    setShots(ships.reduce((acc, rec) => acc + rec.lives, 0) + maxMiss)
+    setHits(0)
+    console.log('restart or grid')
+  }, [restart, grid])
 
   return (
     <div className="flex flex-col">
