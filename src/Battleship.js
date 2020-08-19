@@ -31,11 +31,9 @@ const BoardContainer = () => {
           grid[x] = [...grid[x], { ship: 0, hit: 0, inactive: false }]
         }
       }
-      console.log('empty grid')
-
       return grid
     },
-    [restart]
+    [hits, shots]
   )
 
   // useEffect(() => {
@@ -51,8 +49,9 @@ const BoardContainer = () => {
       const length = getRandomInt(3) + 2
       const direction = getRandomInt(20) ? 'vertical' : 'horizontal'
       newShips = [...newShips, { startPos, length, direction, lives: length }]
-      console.log('add ships func', newShips)
     }
+    console.log('add ships func', newShips)
+
     setShips([...newShips])
     console.log('add ship')
   }
@@ -71,7 +70,7 @@ const BoardContainer = () => {
     let newGrid = grid
     ships.forEach((ship) => {
       const { x, y } = ship.startPos
-      if (ship.direction === 'vertical') {
+      if (ship.direction === 'horizontal') {
         if (y + ship.length <= gridSize) {
           for (let i = y; i < y + ship.length; i += 1) {
             newGrid[x][i].ship = 1
@@ -84,11 +83,11 @@ const BoardContainer = () => {
       } else {
         if (x + ship.length <= gridSize) {
           for (let i = x; i < x + ship.length; i += 1) {
-            newGrid[x][i].ship = 1
+            newGrid[i][y].ship = 1
           }
         } else {
           for (let i = x; i > x - ship.length; i -= 1) {
-            newGrid[x][i].ship = 1
+            newGrid[i][y].ship = 1
           }
         }
       }
@@ -150,4 +149,4 @@ const BoardContainer = () => {
   )
 }
 
-export default BoardContainer
+export default React.memo(BoardContainer)
