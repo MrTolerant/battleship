@@ -47,7 +47,7 @@ const BoardContainer = () => {
     for (let i = 1; i < count; i += 1) {
       const startPos = { x: getRandomInt(gridSize), y: getRandomInt(gridSize) }
       const length = getRandomInt(3) + 2
-      const direction = getRandomInt(20) ? 'vertical' : 'horizontal'
+      const direction = getRandomInt(2) ? 'vertical' : 'horizontal'
       newShips = [...newShips, { startPos, length, direction, lives: length }]
     }
     console.log('add ships func', newShips)
