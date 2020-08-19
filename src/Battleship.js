@@ -11,17 +11,10 @@ const BoardContainer = () => {
   const maxMiss = 5
   const [ships, setShips] = useState([])
   const gridSize = 10
-  const shipsCount = 10
-  const [shots, setShots] = useState(0)
+  const shipsCount = 4
+  const [shots, setShots] = useState(shipsCount + maxMiss)
   const [hits, setHits] = useState(0)
   const [aliveShips, setAliveShips] = useState(0)
-
-  const restart = useCallback(() => {
-    // setShots(0)
-    setHits(0)
-    setGrid(emptyGrid(gridSize))
-    addShips(shipsCount)
-  }, [])
 
   const emptyGrid = useCallback(
     (gridSize) => {
@@ -37,13 +30,9 @@ const BoardContainer = () => {
     [hits, shots]
   )
 
-  // useEffect(() => {
-  //   set
-  // }, [grid])
-
   const [grid, setGrid] = useState(emptyGrid(gridSize, shipsCount))
 
-  const addShips = (count = 1) => {
+  const addShips = useCallback((count = 1) => {
     let newShips = []
     for (let i = 1; i <= count; i += 1) {
       const startPos = { x: getRandomInt(gridSize), y: getRandomInt(gridSize) }
@@ -52,10 +41,10 @@ const BoardContainer = () => {
       newShips = [...newShips, { startPos, length, direction, lives: length, alive: true, cells: [] }]
     }
     console.log('add ships func', newShips)
-
+    setShots(newShips.reduce((acc, rec) => acc + rec.length, 0) + maxMiss)
     setShips([...newShips])
     console.log('add ship')
-  }
+  }, [])
 
   useEffect(() => {
     addShips(shipsCount)
@@ -67,7 +56,7 @@ const BoardContainer = () => {
     console.log('put ships useffect')
   }, [ships])
 
-  const putShips = () => {
+  const putShips = useCallback(() => {
     let newGrid = grid
     ships.forEach((ship) => {
       const { x, y } = ship.startPos
@@ -99,7 +88,7 @@ const BoardContainer = () => {
     })
     setGrid([...newGrid])
     console.log('new ships', grid)
-  }
+  }, [ships])
 
   const onClick = (x, y) => {
     console.log('click', x, y)
@@ -123,15 +112,16 @@ const BoardContainer = () => {
     }
   }
 
+  const restart = useCallback(() => {
+    setShots(0)
+    setHits(0)
+    setGrid(emptyGrid(gridSize))
+    addShips(shipsCount)
+  }, [])
+
   useEffect(() => {
     setAliveShips(ships.reduce((acc, ship) => (ship.alive ? (acc += 1) : acc), 0))
   }, [ships])
-
-  useEffect(() => {
-    setShots(ships.reduce((acc, rec) => acc + rec.lives, 0) + maxMiss)
-    setHits(0)
-    console.log('restart or grid')
-  }, [restart, grid])
 
   return (
     <div className="flex flex-col">
@@ -139,34 +129,13 @@ const BoardContainer = () => {
         <div className="p-2">shots: {shots}</div> <div className="ml-auto p-2">hits: {hits}</div> <div className="ml-auto p-2">ships: {aliveShips}</div>
       </div>
       <div className="flex flex-col items-center p-2">
-        {aliveShips < 0 && shots === 0 && (
-          <>
-            <div className="text-3xl">You lose =(</div>
-            <button className="m-2 bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
-              restart
-            </button>
-          </>
-        )}
-        {aliveShips === 0 && (
-          <>
-            <div className="text-3xl">You win =)</div>
-            {/* <button className="m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
-              restart
-            </button> */}
-          </>
-        )}
+        {aliveShips > 0 && shots === 0 && <div className="text-3xl">You lose =(</div>}
+        {aliveShips === 0 && <div className="text-3xl">You win =)</div>}
         {aliveShips > 0 && shots > 0 && <Board onClick={onClick} grid={grid} />}
       </div>
-      {hits < shipsCount && shots > 0 && (
-        <>
-          {/* <button className="transition duration-500 ease-in-out m-2 bg-yellow-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onClick={addShip}>
-            AddShip
-          </button> */}
-          <button className="transition duration-500 ease-in-out m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
-            restart
-          </button>
-        </>
-      )}
+      <button className="transition duration-500 ease-in-out m-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={restart}>
+        restart
+      </button>
     </div>
   )
 }
